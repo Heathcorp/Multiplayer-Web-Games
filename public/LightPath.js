@@ -20,14 +20,18 @@ class Vec2 {
 }
 
 class Player {
-    constructor(Name, Colour, Position) {
+    constructor(Name, Colour, Path = null) {
         this.name = Name;
         this.colour = Colour;
-        this.positon = Position;
+        this.path = LightPath;
+    }
+
+    currentPosition() {
+        return this.path.position;
     }
 
     move(Vector) {
-        this.positon.Add(Vector)
+        this.path = LightPath(Vector, this.path);
     }
 }
 
