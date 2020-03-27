@@ -1,10 +1,19 @@
-const express = require("express");
-const io = require("socket.io");
+const express = require("express")
 const app = express();
-const port = 7070;
+const server = require('http').Server(app);
+const io = require("socket.io")(server);
 
-app.get("/", function (request, response) {
-    response.sendFile(__dirname + "/game/index.html");
+app.use(express.static("public"));
+
+//app.get("/", function (request, response) {
+    //response.static(__dirname + "/public");
+//});
+
+server.listen(80);
+
+io.on("connection", function (socket) {
+    io.on("new player", function(name)
+    {
+        console.log(name + "has connected");
+    });
 });
-
-app.listen(port);
