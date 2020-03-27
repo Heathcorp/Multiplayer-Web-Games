@@ -1,7 +1,7 @@
 var socket = io.connect("http://127.0.0.1");
-socket.on("connection", function() 
+socket.on("connect", function() 
 {
-    socket.emit("new player", "player name here");
+    socket.emit("new player", prompt("Player Name:"));
 });
 
 
