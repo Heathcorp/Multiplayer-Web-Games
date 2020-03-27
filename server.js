@@ -11,9 +11,15 @@ app.use(express.static("public"));
 
 server.listen(80);
 
-io.on("connection", function (socket) {
-    io.on("new player", function(name)
+io.on("connect", function (socket) {
+    socket.on("new player", function(name)
     {
-        console.log(name + "has connected");
+        console.log(name + " has connected");
+        socket.name = name;
+    });
+
+    socket.on("disconnect", function()
+    {
+        console.log(socket.name + " has disconnected");
     });
 });
