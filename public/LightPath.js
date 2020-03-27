@@ -23,7 +23,7 @@ class LightPath
 {
     //recursive light path object (like a linkedlist)
     //each time the player moves 1 square you set its currentPlayerPath to be new LightPath(newPosition, currentPlayerPath)
-    constructor(position: Vec2, restOfPath: LightPath)
+    constructor(position, restOfPath)
     {
         this.position = position;
         this.path = restOfPath;
