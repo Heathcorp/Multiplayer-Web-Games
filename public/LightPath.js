@@ -38,6 +38,7 @@ class LightPath {
         this.position = position;
         this.path = restOfPath;
     }
+    //Hey
 
     //recursive check for collision with this path
     IsOverlapping(position) {
