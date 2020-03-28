@@ -8,10 +8,12 @@ app.use(express.static("public"));
 server.listen(80);
 
 io.on("connect", function (socket) {
-    socket.on("new player", function(name)
+    var colour;
+    socket.on("new player", function(name, colour)
     {
         console.log(name + " has connected");
         socket.name = name;
+        colour = colour;
     });
 
     socket.on("disconnect", function()

@@ -8,51 +8,47 @@ const playerName = prompt("Player Name:");
 const players = new Array(16);
 //players[0] is the client
 players[0] = new Player(playerName, new Colour(15, 63, 255, 255), new LightPath(new Vec2(15, 15), null));
+players[0].Update();
+
+const gameCanvasRect = [new Vec2(0, 0), new Vec2(1024, 576)];
+const gridSize = new Vec2(128, 72);
+const cellWidth = (gameCanvasRect[1].x - gameCanvasRect[0].x) / gridSize.x;
+const cellHeight = (gameCanvasRect[1].y - gameCanvasRect[0].y) / gridSize.y;
+
+var gc; //game canvas
 
 function setup()
 {
-    createCanvas(window.innerWidth, window.innerHeight);
+    gc = createGraphics(cellWidth * gridSize.x, cellHeight * gridSize.y);
+    createCanvas(windowWidth, windowHeight);
 }
-
-const gridRect = [new Vec2(0, 0), new Vec2(1024, 576)];
-const gridSize = new Vec2(128, 72);
-var grid = new Array(gridSize.y).fill(null).map(() => new Array(gridSize.x).fill(Colour.White));
-const cellWidth = (gridRect[1].x - gridRect[0].x) / gridSize.x;
-const cellHeight = (gridRect[1].y - gridRect[0].y) / gridSize.y;
 
 function draw()
 {
-    //this update loop thingy should probs be server-side btw, this is temporary
-    //this basically draws each lightPath on the grid
+    gc.background(0);
+
     players.map(function(player)
     {
-        player.Update();
+        if(!(player.lightPath.path.IsOverlapping(player.lightPath.position)))
+        {
+            player.Update();
+        }
         player.lightPath.map(function(lightPath)
         {
-            grid[lightPath.position.y][lightPath.position.x] = player.colour;
+            let x = lightPath.position.x;
+            let y = lightPath.position.y;
+            let col = player.colour;
+            gc.push();
+            gc.noStroke();
+            gc.rectMode(CORNER);
+            gc.fill(col.r, col.g, col.b, col.a);
+            gc.rect(x * cellWidth, y * cellHeight, cellWidth, cellHeight);
+            gc.pop();
         });
     });
-
+    
     background(32, 32, 48);
-
-    fill(255);
-
-    for(let y = 0; y < gridSize.y; y++)
-    {
-        for(let x = 0; x < gridSize.x; x++)
-        {
-            push();
-            noStroke();
-            fill(grid[y][x].r, grid[y][x].g, grid[y][x].b, grid[y][x].a);
-            rect(gridRect[0].x + x * cellWidth, gridRect[0].y + y * cellHeight, cellWidth, cellHeight);
-            pop();
-            grid[y][x] = Colour.White;
-        }
-    }
-}
-
-function windowResized() {
-    resizeCanvas(window.innerWidth, window.innerHeight);
+    image(gc, 0, 0, cellWidth * gridSize.x, cellHeight * gridSize.y);
 }
 
 function keyPressed() {
@@ -65,4 +61,8 @@ function keyPressed() {
     } else if (keyCode === 40 || keyCode === 83) {//S or Down arrow
         players[0].direction = 3;
     }
+}
+
+function windowResized() {
+    resizeCanvas(windowWidth, windowHeight);
 }
