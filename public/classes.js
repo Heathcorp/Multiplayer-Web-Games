@@ -28,13 +28,14 @@ class Colour
 {
     constructor(r, g, b, a)
     {
-        this.r = r;
-        this.g = g;
-        this.b = b;
-        this.a = a;
+        this.r = Math.floor(r);
+        this.g = Math.floor(g);
+        this.b = Math.floor(b);
+        this.a = Math.floor(a);
     }
 
-    static White = new Colour(255, 255, 255, 255);
+    static white = new Colour(255, 255, 255, 255);
+    static random = new Colour(Math.random() * 255, Math.random() * 255, Math.random() * 255, 255);
 }
 
 class Player {
@@ -43,26 +44,27 @@ class Player {
         this.name = name;
         this.colour = colour;
         this.lightPath = lightPath;
-        this.snakeDirection = 1; //turn direction into radians from the x-axis by multiplying direction by PI/2
+        this.playerDirection = 1; //turn direction into radians from the x-axis by multiplying direction by PI/2
     }
 
     set direction(newDir)
     {
-        //dont pass negative numbers
-        if(!(this.snakeDirection == (newDir % 4) || (this.snakeDirection + 2) % 4 == (newDir % 4)))
+        //dont parse negative numbers
+        newDir = Math.floor(newDir);
+        if(!(this.playerDirection == (newDir % 4) || (this.playerDirection + 2) % 4 == (newDir % 4)))
         {
-            this.snakeDirection = (newDir % 4);
+            this.playerDirection = (newDir % 4);
         }
     }
 
     get direction()
     {
-        return this.snakeDirection;
+        return this.playerDirection;
     }
 
-    HeadPosition()
+    get HeadPosition()
     {
-        return this.path.position;
+        return this.lightPath.position;
     }
 
     Update()
@@ -85,7 +87,7 @@ class Player {
                 unitVec = new Vec2(0, 1);
                 break;
         }
-        this.lightPath = new LightPath(Vec2.Add(this.lightPath.position, unitVec), this.lightPath);
+        this.lightPath = new LightPath(Vec2.Add(this.HeadPosition, unitVec), this.lightPath);
     }
 }
 
@@ -130,3 +132,13 @@ class LightPath {
         callback(this);
     }
 }
+
+//required if the server wants to access these classes
+try
+{
+    exports.Vec2 = Vec2;
+    exports.Colour = Colour;
+    exports.LightPath = LightPath;
+    exports.Player = Player;
+} 
+catch(error) {}
