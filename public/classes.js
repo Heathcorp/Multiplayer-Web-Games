@@ -34,6 +34,11 @@ class Colour
         this.a = Math.floor(a);
     }
 
+    static FromObject(obj)
+    {
+        return new Colour(obj.r, obj.g, obj.b, obj.a);
+    }
+
     static white = new Colour(255, 255, 255, 255);
     static random = new Colour(Math.random() * 255, Math.random() * 255, Math.random() * 255, 255);
 }

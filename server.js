@@ -15,7 +15,7 @@ io.on("connect", function (socket) {
     socket.on("player connected", function(name, colour)
     {
         console.log(name + " has connected");
-        player = new Player(name, colour, new LightPath(new Vec2(15, 15), null));
+        player = new Player(name, Colour.FromObject(colour), new LightPath(new Vec2(15, 15), null));
         player.direction = Math.random() * 3;
         player.Update();
         players[player.name] = player;
@@ -46,11 +46,10 @@ function Update() //called each server "tick"
     newPositions = new Object();
     for (let [name, player] of Object.entries(players))
     {
-        if (!player.lightPath.IsOverlapping(player.lightPath.position))
+        if (!player.lightPath.lightPath.IsOverlapping(player.lightPath.position))
         {
             player.Update();
             newPositions[name] = player.HeadPosition;
-            console.log("updated");
         }
     }
     io.emit("update", newPositions);

@@ -64,7 +64,6 @@ socket.on("connect", function()
         {
             let player = Player.FromObject(value)
             players[key] = player;
-            console.log(player.lightPath, player.colour);
             player.lightPath.map(function(lightPath)
             {
                 DrawPosition(lightPath.position, player.colour);
