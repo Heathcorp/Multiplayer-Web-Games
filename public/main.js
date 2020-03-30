@@ -3,7 +3,7 @@ const colour = Colour.random;
 var players; //dictionary of playerName keyed player objects
 
 const gameCanvasRect = [new Vec2(0, 0), new Vec2(1024, 576)];
-const gridSize = new Vec2(128, 72);
+const gridSize = new Vec2(512,288);
 const cellWidth = (gameCanvasRect[1].x - gameCanvasRect[0].x) / gridSize.x;
 const cellHeight = (gameCanvasRect[1].y - gameCanvasRect[0].y) / gridSize.y;
 
@@ -31,7 +31,7 @@ function setup()
 
 function draw()
 {    
-    //background(32, 32, 48);
+    background(32, 32, 48);
     image(gc, 0, 0, cellWidth * gridSize.x, cellHeight * gridSize.y);
 }
 
