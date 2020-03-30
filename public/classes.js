@@ -39,6 +39,11 @@ class Colour
 }
 
 class Player {
+    static FromObject(obj)
+    {
+        return new Player(obj.name, obj.colour, LightPath.FromObject(obj.lightPath));
+    }
+
     constructor(name, colour, lightPath)
     {
         this.name = name;
@@ -96,38 +101,50 @@ class LightPath {
     //each time the player moves 1 square you set its currentPlayerPath to be new LightPath(newPosition, currentPlayerPath)
     constructor(position, restOfPath) {
         this.position = position;
-        this.path = restOfPath;
+        this.lightPath = restOfPath;
     }
-    //Hey yo
+    
+    //recursively convert js object into es6 class
+    static FromObject(obj)
+    {
+        if (obj.lightPath != null)
+        {
+            return new LightPath(obj.position, LightPath.FromObject(obj.lightPath));
+        }
+        else
+        {
+            return new LightPath(obj.position, null);
+        }
+    }
 
     //recursive check for collision with this path
     IsOverlapping(position) {
         if (position.IsEqual(this.position)) {
             return true;
         }
-        else if (this.path == null) {
+        else if (this.lightPath == null) {
             return false;
         }
         else {
-            return this.path.IsOverlapping(position);
+            return this.lightPath.IsOverlapping(position);
         }
     }
 
     //recursively returns a string representation of this path which can then be sent over internet
     stringify() {
-        if (this.path == null) {
+        if (this.lightPath == null) {
             return JSON.stringify(this.position);
         } else {
-            return this.path.stringify() + "," + JSON.stringify(this.position);
+            return this.lightPath.stringify() + "," + JSON.stringify(this.position);
         }
     }
 
     //recursively calls given function on each element
     map(callback)
     {
-        if(this.path != null)
+        if(this.lightPath != null)
         {
-            this.path.map(callback);
+            this.lightPath.map(callback);
         }
         callback(this);
     }

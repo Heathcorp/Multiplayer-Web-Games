@@ -1,15 +1,3 @@
-var socket = io.connect("http://127.0.0.1");
-socket.on("connect", function() 
-{
-    socket.emit("new player", playerName, colour);
-});
-
-socket.on("all players", function(allPlayers)
-{
-    players = allPlayers; //WIP
-
-});
-
 const playerName = prompt("Player Name:");
 const colour = Colour.random;
 var players; //dictionary of playerName keyed player objects
@@ -21,6 +9,19 @@ const cellHeight = (gameCanvasRect[1].y - gameCanvasRect[0].y) / gridSize.y;
 
 var gc; //game canvas
 
+function DrawPosition(pos, col)
+{
+    let x = pos.x;
+    let y = pos.y;
+    gc.push();
+    gc.noStroke();
+    gc.rectMode(CORNER);
+    gc.fill(col.r, col.g, col.b, col.a);
+    gc.rect(x * cellWidth, y * cellHeight, cellWidth, cellHeight);
+    gc.pop();
+}
+
+
 function setup()
 {
     gc = createGraphics(cellWidth * gridSize.x, cellHeight * gridSize.y);
@@ -30,32 +31,8 @@ function setup()
 
 function draw()
 {    
-    background(32, 32, 48);
+    //background(32, 32, 48);
     image(gc, 0, 0, cellWidth * gridSize.x, cellHeight * gridSize.y);
-}
-
-socket.on("update", function(newPositions)
-{
-    console.log(Object.entries(newPositions).length);
-    for (let [key, value] of Object.entries(newPositions)) {
-        console.log(key, value);
-        let player = players.get(key);
-        player.lightPath = new LightPath(value, player.lightPath);
-        DrawHeadPosition(player);
-    }
-});
-
-function DrawHeadPosition(player)
-{
-    let x = player.HeadPosition.x;
-    let y = player.HeadPosition.y;
-    let col = player.colour;
-    gc.push();
-    gc.noStroke();
-    gc.rectMode(CORNER);
-    gc.fill(col.r, col.g, col.b, col.a);
-    gc.rect(x * cellWidth, y * cellHeight, cellWidth, cellHeight);
-    gc.pop();
 }
 
 function keyPressed() {
@@ -75,3 +52,45 @@ function keyPressed() {
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
 }
+
+const socket = io.connect("http://101.186.164.176");
+socket.on("connect", function() 
+{
+    socket.emit("player connected", playerName, colour);
+    socket.on("all players", function(allPlayers)
+    {
+        players = new Object();
+        for (let [key, value] of Object.entries(allPlayers))
+        {
+            let player = Player.FromObject(value)
+            players[key] = player;
+            console.log(player.lightPath, player.colour);
+            player.lightPath.map(function(lightPath)
+            {
+                DrawPosition(lightPath.position, player.colour);
+            });
+        }
+
+        //draw all of them WIP
+
+        socket.on("update", function(newPositions)
+        {
+            for (let [key, value] of Object.entries(newPositions))
+            {
+                let player = players[key];
+                player.lightPath = new LightPath(value, player.lightPath);
+                DrawPosition(player.HeadPosition, player.colour);
+            }
+        });
+
+        socket.on("player connected", function(newPlayer)
+        {
+            players[newPlayer.name] = Player.FromObject(newPlayer);
+        });
+
+        socket.on("player disconnected", function(name)
+        {
+            delete players[name];
+        });
+    });
+});

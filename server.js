@@ -4,7 +4,7 @@ const express = require("express");
 const app = express();
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
-const players = new Array(0).fill(null);
+const players = new Object();
 
 app.use(express.static("public"));
 
@@ -12,13 +12,14 @@ server.listen(80);
 
 io.on("connect", function (socket) {
     var player;
-    socket.on("new player", function(name, colour)
+    socket.on("player connected", function(name, colour)
     {
         console.log(name + " has connected");
         player = new Player(name, colour, new LightPath(new Vec2(15, 15), null));
         player.direction = Math.random() * 3;
+        players[player.name] = player;
         socket.emit("all players", players);
-        players.push(player);
+        socket.broadcast.emit("player connected", player);
     });
 
     socket.on("change direction", function(newDir)
@@ -28,20 +29,25 @@ io.on("connect", function (socket) {
 
     socket.on("disconnect", function()
     {
-        console.log(player.name + " has disconnected");
+        if (player != null)
+        {
+            console.log(player.name + " has disconnected");
+            io.emit("player disconnected", player.name);
+            delete players[player.name];
+        }
     });
 });
 
-let timer = setInterval(Update, 5000);
+let timer = setInterval(Update, 200);
 
 function Update() //called each server "tick"
 {
-    newPositions = new Map();
-    players.map(function(player)
+    newPositions = new Object();
+    for (let [name, player] of Object.entries(players))
     {
         player.Update();
-        newPositions.set(player.name, player.HeadPosition);
-    });
+        newPositions[name] = player.HeadPosition;
+    }
     io.emit("update", newPositions);
     //clearTimeout(timer);
 }
