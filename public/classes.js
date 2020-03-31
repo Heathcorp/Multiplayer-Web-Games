@@ -24,7 +24,7 @@ class Vec2 {
 }
 
 class Colour {
-    constructor(r, g, b, a) {
+    constructor(r, g, b, a = 255) {
         this.r = Math.floor(r);
         this.g = Math.floor(g);
         this.b = Math.floor(b);
@@ -48,6 +48,7 @@ class Player {
         this.name = name;
         this.colour = colour;
         this.lightPath = lightPath;
+        this.kills = 0;
         this.playerDirection = 1; //turn direction into radians from the x-axis by multiplying direction by PI/2
     }
 

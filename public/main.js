@@ -53,14 +53,16 @@ function windowResized() {
 
 function DrawToTable(PlayerToDraw) {
     var table = document.getElementById("PlayerTable");
-    var row = table.insertRow(0);
+    var row = table.insertRow(1);
     var cell1 = row.insertCell(0);
     var cell2 = row.insertCell(1);
     var cell2 = row.insertCell(2);
 
     // Add some text to the new cells:
     cell1.innerHTML = PlayerToDraw.name;
-    cell2.innerHTML = PlayerToDraw.colour;
+    //cell2.innerHTML = PlayerToDraw.colour;
+    cell2.style.color = "#444444"
+    cell3.innerHTML = PlayerToDraw.kills;
 }
 
 //const socket = io.connect("http://101.186.164.176");
