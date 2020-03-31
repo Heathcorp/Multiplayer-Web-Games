@@ -24,7 +24,7 @@ function DrawPosition(pos, col) {
 function setup() {
     gc = createGraphics(cellWidth * gridSize.x, cellHeight * gridSize.y);
     gc.background(0);
-    var canvas = createCanvas(windowWidth, windowHeight);
+    var canvas = createCanvas(cellWidth * gridSize.x, cellHeight * gridSize.y);
     canvas.parent('holder');
 }
 
@@ -63,8 +63,8 @@ function DrawToTable(PlayerToDraw) {
     cell2.innerHTML = PlayerToDraw.colour;
 }
 
-//const socket = io.connect("http://101.186.164.176");
-const socket = io.connect("http://localhost/");
+const socket = io.connect("http://101.186.164.176");
+//const socket = io.connect("http://localhost/");
 
 socket.on("connect", function () {
     socket.emit("player connected", playerName, colour);
@@ -76,6 +76,7 @@ socket.on("connect", function () {
             player.lightPath.map(function (lightPath) {
                 DrawPosition(lightPath.position, player.colour);
             });
+            DrawToTable(player);
         }
 
         //draw all of them WIP
@@ -85,12 +86,13 @@ socket.on("connect", function () {
                 let player = players[key];
                 player.lightPath = new LightPath(value, player.lightPath);
                 DrawPosition(player.HeadPosition, player.colour);
-                DrawToTable(player);
             }
         });
 
         socket.on("player connected", function (newPlayer) {
-            players[newPlayer.name] = Player.FromObject(newPlayer);
+            let player = Player.FromObject(newPlayer);
+            players[newPlayer.name] = player;
+            DrawToTable(player);
         });
 
         socket.on("player disconnected", function (name) {
