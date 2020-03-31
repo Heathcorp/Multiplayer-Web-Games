@@ -6,7 +6,7 @@ var startDirection;
 var players; //dictionary of playerName keyed player objects
 
 const gameCanvasRect = [new Vec2(0, 0), new Vec2(1024, 576)];
-const gridSize = new Vec2(512, 288);
+const gridSize = new Vec2(128, 72);
 const cellWidth = (gameCanvasRect[1].x - gameCanvasRect[0].x) / gridSize.x;
 const cellHeight = (gameCanvasRect[1].y - gameCanvasRect[0].y) / gridSize.y;
 
@@ -29,7 +29,7 @@ function setup() {
     gc = createGraphics(cellWidth * gridSize.x, cellHeight * gridSize.y);
     gc.background(0);
     canvas = createCanvas(cellWidth * gridSize.x, cellHeight * gridSize.y);
-    
+
     var x = (windowWidth - width) / 2;
     var y = (windowHeight - height) / 2;
     canvas.position(x, y);
@@ -89,14 +89,14 @@ function DrawToTable(PlayerToDraw) {
     cell3.innerHTML = PlayerToDraw.kills;
 }
 
-//const socket = io.connect("http://101.186.164.176");
-const socket = io.connect("http://localhost/");
+const socket = io.connect("http://101.186.164.176");
+//const socket = io.connect("http://localhost/");
 
 var JoinGame; //JoinGame function 
 
 socket.on("connect", function () {
     JoinGame = function() {
-        socket.emit("player connected", playerName, playerColour, startPosition, startDirection);
+        socket.emit("player joined", playerName, playerColour, startPosition, startDirection);
     }
     socket.on("all players", function (allPlayers) {
         players = new Object();
@@ -117,13 +117,17 @@ socket.on("connect", function () {
             }
         });
 
-        socket.on("player connected", function (newPlayer) {
+        socket.on("player joined", function (newPlayer) {
             let player = Player.FromObject(newPlayer);
             players[newPlayer.name] = player;
             DrawToTable(player);
         });
 
         socket.on("player disconnected", function (name) {
+            players[name].lightPath.map(function (lightPath) 
+            {
+                DrawPosition(lightPath.position, Colour.black);
+            });
             delete players[name];
         });
     });

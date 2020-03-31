@@ -12,19 +12,21 @@ server.listen(80);
 
 io.on("connect", function (socket) {
     var player;
-    socket.on("player connected", function(name, colour, position, direction)
+
+    socket.emit("all players", players);
+    socket.on("player joined", function(name, colour, position, direction)
     {
-        console.log(name + " has connected");
+        console.log(name + " has joined the game");
         player = new Player(name, Colour.FromObject(colour), new LightPath(position, null));
         player.direction = direction;
         player.Update();
         players[player.name] = player;
-        socket.emit("all players", players);
-        socket.broadcast.emit("player connected", player);
+        io.emit("player joined", player);
     });
 
     socket.on("change direction", function(newDir)
     {
+        //console.log(player.name + " has changed direction to " + newDir);
         player.direction = newDir;
     });
 
@@ -39,7 +41,7 @@ io.on("connect", function (socket) {
     });
 });
 
-let timer = setInterval(Update, 25);
+let timer = setInterval(Update, 50);
 
 function Update() //called each server "tick"
 {
@@ -76,5 +78,4 @@ function Update() //called each server "tick"
         }
     }
     io.emit("update", newPositions);
-    //clearTimeout(timer);
 }
