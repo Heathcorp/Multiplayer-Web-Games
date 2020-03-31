@@ -25,6 +25,9 @@ function setup() {
     gc = createGraphics(cellWidth * gridSize.x, cellHeight * gridSize.y);
     gc.background(0);
     var canvas = createCanvas(cellWidth * gridSize.x, cellHeight * gridSize.y);
+    var x = (windowWidth - width) / 2;
+    var y = (windowHeight - height) / 2;
+    canvas.position(x, y);
     canvas.parent('holder');
 }
 
