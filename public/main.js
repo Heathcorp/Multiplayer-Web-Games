@@ -61,7 +61,7 @@ function DrawToTable(PlayerToDraw) {
     // Add some text to the new cells:
     cell1.innerHTML = PlayerToDraw.name;
     //cell2.innerHTML = PlayerToDraw.colour;
-    cell2.style.color = "#444444"
+    cell2.style.background = PlayerToDraw.colour.ToHex();
     cell3.innerHTML = PlayerToDraw.kills;
 }
 
