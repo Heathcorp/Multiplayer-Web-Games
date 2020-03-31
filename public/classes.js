@@ -31,6 +31,11 @@ class Colour {
         this.a = Math.floor(a);
     }
 
+    ToHex()
+    {
+        return "FFFFFF";
+    }
+
     static FromObject(obj) {
         return new Colour(obj.r, obj.g, obj.b, obj.a);
     }
