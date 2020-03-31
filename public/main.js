@@ -24,7 +24,8 @@ function DrawPosition(pos, col) {
 function setup() {
     gc = createGraphics(cellWidth * gridSize.x, cellHeight * gridSize.y);
     gc.background(0);
-    createCanvas(windowWidth, windowHeight);
+    var canvas = createCanvas(windowWidth, windowHeight);
+    canvas.parent('holder');
 }
 
 function draw() {
@@ -62,7 +63,9 @@ function DrawToTable(PlayerToDraw) {
     cell2.innerHTML = PlayerToDraw.colour;
 }
 
-const socket = io.connect("http://101.186.164.176");
+//const socket = io.connect("http://101.186.164.176");
+const socket = io.connect("http://localhost/");
+
 socket.on("connect", function () {
     socket.emit("player connected", playerName, colour);
     socket.on("all players", function (allPlayers) {
