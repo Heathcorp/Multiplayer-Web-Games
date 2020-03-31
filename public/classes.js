@@ -49,6 +49,7 @@ class Player {
         this.colour = colour;
         this.lightPath = lightPath;
         this.kills = 0;
+        this.isDead = false;
         this.playerDirection = 1; //turn direction into radians from the x-axis by multiplying direction by PI/2
     }
 
@@ -112,10 +113,10 @@ class LightPath {
     //recursive check for collision with this path
     IsOverlapping(position) {
         if (position.IsEqual(this.position)) {
-            return true;
+            return this.position;
         }
         else if (this.lightPath == null) {
-            return false;
+            return null;
         }
         else {
             return this.lightPath.IsOverlapping(position);
