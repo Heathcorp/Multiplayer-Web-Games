@@ -56,7 +56,7 @@ function DrawToTable(PlayerToDraw) {
     var row = table.insertRow(1);
     var cell1 = row.insertCell(0);
     var cell2 = row.insertCell(1);
-    var cell2 = row.insertCell(2);
+    var cell3 = row.insertCell(2);
 
     // Add some text to the new cells:
     cell1.innerHTML = PlayerToDraw.name;
@@ -65,8 +65,8 @@ function DrawToTable(PlayerToDraw) {
     cell3.innerHTML = PlayerToDraw.kills;
 }
 
-const socket = io.connect("http://101.186.164.176");
-//const socket = io.connect("http://localhost/");
+//const socket = io.connect("http://101.186.164.176");
+const socket = io.connect("http://localhost/");
 
 socket.on("connect", function () {
     socket.emit("player connected", playerName, colour);
