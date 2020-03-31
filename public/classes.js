@@ -46,7 +46,7 @@ class Colour {
 
 class Player {
     static FromObject(obj) {
-        return new Player(obj.name, obj.colour, LightPath.FromObject(obj.lightPath));
+        return new Player(obj.name, Colour.FromObject(obj.colour), LightPath.FromObject(obj.lightPath));
     }
 
     constructor(name, colour, lightPath) {

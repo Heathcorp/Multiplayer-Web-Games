@@ -52,6 +52,7 @@ function windowResized() {
 }
 
 function DrawToTable(PlayerToDraw) {
+    console.log(PlayerToDraw.colour);
     var table = document.getElementById("PlayerTable");
     var row = table.insertRow(1);
     var cell1 = row.insertCell(0);
