@@ -46,7 +46,23 @@ function Update() //called each server "tick"
     newPositions = new Object();
     for (let [name, player] of Object.entries(players))
     {
-        if (!player.lightPath.lightPath.IsOverlapping(player.lightPath.position))
+        //check for collisions
+        if (player.lightPath.lightPath.IsOverlapping(player.HeadPosition))
+        {
+            player.isDead = true;
+        }
+        else
+        {
+            for (let [otherName, otherPlayer] of Object.entries(players))
+            {
+
+                if (player.isDead)
+                {
+                    break;
+                }
+            }
+        }
+        if (!player.isDead)
         {
             player.Update();
             newPositions[name] = player.HeadPosition;

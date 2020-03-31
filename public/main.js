@@ -81,8 +81,6 @@ socket.on("connect", function () {
             DrawToTable(player);
         }
 
-        //draw all of them WIP
-
         socket.on("update", function (newPositions) {
             for (let [key, value] of Object.entries(newPositions)) {
                 let player = players[key];
