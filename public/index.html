@@ -8,6 +8,28 @@
 
     body {
         margin: 0;
+        background-color: #003e21;
+    }
+
+    #HeadingMain {
+        color: #067242;
+    }
+
+    #holder {
+        margin: auto;
+    }
+
+    #PlayerTable {
+        position: absolute;
+        bottom: 20px;
+        left: 5%;
+        width: 90%;
+        background-color: #098b54;
+    }
+
+    .center {
+        text-align: center;
+        background-color: #001e10;
     }
 </style>
 
@@ -21,21 +43,17 @@
 <script src="/main.js"></script>
 
 <body>
-    <h1 id="HeadingMain">Light Bike 1.0</h1>
+    <div class="center">
+        <h1 id="HeadingMain">Light Bike 1.0</h1><button>Start</button>
+    </div>
     <div id="holder"></div>
-    <table style="width:100%" id="PlayerTable">
+    <table id="PlayerTable">
         <tr>
             <th>Name</th>
             <th>Colour</th>
             <th>Kills</th>
         </tr>
-        <tr>
-            <td>BlankName</td>
-            <td>BlankColour</td>
-            <td>0</td>
-        </tr>
     </table>
-
 </body>
 
 </html>

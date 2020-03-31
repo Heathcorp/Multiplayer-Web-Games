@@ -36,17 +36,21 @@ class Colour {
         this.a = Math.floor(a);
     }
 
-    ToHex()
-    {
-        return "FFFFFF";
-    }
-
     static FromObject(obj) {
         return new Colour(obj.r, obj.g, obj.b, obj.a);
     }
 
+    ToHex() {
+        return "#" + componentToHex(this.r) + componentToHex(this.g) + componentToHex(this.b);
+    }
+
     static white = new Colour(255, 255, 255, 255);
     static random = new Colour(Math.random() * 255, Math.random() * 255, Math.random() * 255, 255);
+}
+
+function componentToHex(c) {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
 }
 
 class Player {
