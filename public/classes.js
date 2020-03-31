@@ -18,24 +18,20 @@ class Vec2 {
         this.y += Math.floor(Vector.y);
     }
 
-    static Add(v1, v2)
-    {
+    static Add(v1, v2) {
         return new Vec2(v1.x + v2.x, v1.y + v2.y);
     }
 }
 
-class Colour
-{
-    constructor(r, g, b, a)
-    {
+class Colour {
+    constructor(r, g, b, a) {
         this.r = Math.floor(r);
         this.g = Math.floor(g);
         this.b = Math.floor(b);
         this.a = Math.floor(a);
     }
 
-    static FromObject(obj)
-    {
+    static FromObject(obj) {
         return new Colour(obj.r, obj.g, obj.b, obj.a);
     }
 
@@ -44,41 +40,34 @@ class Colour
 }
 
 class Player {
-    static FromObject(obj)
-    {
+    static FromObject(obj) {
         return new Player(obj.name, obj.colour, LightPath.FromObject(obj.lightPath));
     }
 
-    constructor(name, colour, lightPath)
-    {
+    constructor(name, colour, lightPath) {
         this.name = name;
         this.colour = colour;
         this.lightPath = lightPath;
         this.playerDirection = 1; //turn direction into radians from the x-axis by multiplying direction by PI/2
     }
 
-    set direction(newDir)
-    {
+    set direction(newDir) {
         //dont parse negative numbers
         newDir = Math.floor(newDir);
-        if(!(this.playerDirection == (newDir % 4) || (this.playerDirection + 2) % 4 == (newDir % 4)))
-        {
+        if (!(this.playerDirection == (newDir % 4) || (this.playerDirection + 2) % 4 == (newDir % 4))) {
             this.playerDirection = (newDir % 4);
         }
     }
 
-    get direction()
-    {
+    get direction() {
         return this.playerDirection;
     }
 
-    get HeadPosition()
-    {
+    get HeadPosition() {
         return this.lightPath.position;
     }
 
-    Update()
-    {
+    Update() {
         let unitVec;
         switch (this.direction) {
             case 0:
@@ -88,7 +77,7 @@ class Player {
             case 1:
                 unitVec = new Vec2(0, -1);
                 break;
-            
+
             case 2:
                 unitVec = new Vec2(-1, 0);
                 break;
@@ -108,16 +97,13 @@ class LightPath {
         this.position = position;
         this.lightPath = restOfPath;
     }
-    
+
     //recursively convert js object into es6 class
-    static FromObject(obj)
-    {
-        if (obj.lightPath != null)
-        {
+    static FromObject(obj) {
+        if (obj.lightPath != null) {
             return new LightPath(obj.position, LightPath.FromObject(obj.lightPath));
         }
-        else
-        {
+        else {
             return new LightPath(obj.position, null);
         }
     }
@@ -145,10 +131,8 @@ class LightPath {
     }
 
     //recursively calls given function on each element
-    map(callback)
-    {
-        if(this.lightPath != null)
-        {
+    map(callback) {
+        if (this.lightPath != null) {
             this.lightPath.map(callback);
         }
         callback(this);
@@ -156,11 +140,10 @@ class LightPath {
 }
 
 //required if the server wants to access these classes
-try
-{
+try {
     exports.Vec2 = Vec2;
     exports.Colour = Colour;
     exports.LightPath = LightPath;
     exports.Player = Player;
-} 
-catch(error) {}
+}
+catch (error) { }
