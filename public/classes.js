@@ -4,6 +4,11 @@ class Vec2 {
         this.y = Math.floor(y);
     }
 
+    static IsEqual(v1, v2)
+    {
+        return v1.x == v2.x && v1.y == v2.y;
+    }
+
     IsEqual(other) {
         if (this.x == other.x && this.y == other.y) {
             return true;

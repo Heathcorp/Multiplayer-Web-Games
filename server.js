@@ -12,11 +12,11 @@ server.listen(80);
 
 io.on("connect", function (socket) {
     var player;
-    socket.on("player connected", function(name, colour)
+    socket.on("player connected", function(name, colour, position, direction)
     {
         console.log(name + " has connected");
-        player = new Player(name, Colour.FromObject(colour), new LightPath(new Vec2(15, 15), null));
-        player.direction = Math.random() * 3;
+        player = new Player(name, Colour.FromObject(colour), new LightPath(position, null));
+        player.direction = direction;
         player.Update();
         players[player.name] = player;
         socket.emit("all players", players);
@@ -51,14 +51,21 @@ function Update() //called each server "tick"
         {
             player.isDead = true;
         }
-        else
+        if (!player.isDead)
         {
             for (let [otherName, otherPlayer] of Object.entries(players))
             {
-
-                if (player.isDead)
+                if (name != otherName)
                 {
-                    break;
+                    let collisionPos = otherPlayer.lightPath.IsOverlapping(player.HeadPosition);
+                    if (collisionPos != null)
+                    {
+                        player.isDead = true;
+                        if (Vec2.IsEqual(collisionPos, otherPlayer.HeadPosition))
+                        {
+                            otherPlayer.isDead = true;
+                        }
+                    }
                 }
             }
         }

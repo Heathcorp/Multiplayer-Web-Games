@@ -1,5 +1,8 @@
-const playerName = prompt("Player Name:");
-const colour = Colour.random;
+var playerName = prompt("Player Name:");
+var playerColour = Colour.random;
+var startPosition;
+var startDirection;
+
 var players; //dictionary of playerName keyed player objects
 
 const gameCanvasRect = [new Vec2(0, 0), new Vec2(1024, 576)];
@@ -20,12 +23,18 @@ function DrawPosition(pos, col) {
     gc.pop();
 }
 
+var canvas;
 
 function setup() {
     gc = createGraphics(cellWidth * gridSize.x, cellHeight * gridSize.y);
     gc.background(0);
-    var canvas = createCanvas(cellWidth * gridSize.x, cellHeight * gridSize.y);
+    canvas = createCanvas(cellWidth * gridSize.x, cellHeight * gridSize.y);
     canvas.parent('holder');
+
+    canvas.mousePressed(function()
+    {
+        startPosition = new Vec2(mouseX/cellWidth, mouseY/cellHeight);
+    });
 }
 
 function draw() {
@@ -34,7 +43,7 @@ function draw() {
 }
 
 function keyPressed() {
-    var newDir = 0;
+    var newDir;
     if (keyCode === 39 || keyCode === 68) {//D or Right arrow
         newDir = 0;
     } else if (keyCode === 38 || keyCode === 87) {//W or Up arrow
@@ -44,15 +53,25 @@ function keyPressed() {
     } else if (keyCode === 40 || keyCode === 83) {//S or Down arrow
         newDir = 3;
     }
-    socket.emit("change direction", newDir);
+    if (newDir != null)
+    {
+        if (startDirection != null)
+        {
+            socket.emit("change direction", newDir);
+        }
+        else if (startPosition != null)
+        {
+            startDirection = newDir;
+            JoinGame();
+        }
+    }
 }
 
-function windowResized() {
-    resizeCanvas(windowWidth, windowHeight);
-}
+//function windowResized() {
+//    resizeCanvas(windowWidth, windowHeight);
+//}
 
 function DrawToTable(PlayerToDraw) {
-    console.log(PlayerToDraw.colour);
     var table = document.getElementById("PlayerTable");
     var row = table.insertRow(1);
     var cell1 = row.insertCell(0);
@@ -69,8 +88,12 @@ function DrawToTable(PlayerToDraw) {
 //const socket = io.connect("http://101.186.164.176");
 const socket = io.connect("http://localhost/");
 
+var JoinGame; //JoinGame function 
+
 socket.on("connect", function () {
-    socket.emit("player connected", playerName, colour);
+    JoinGame = function() {
+        socket.emit("player connected", playerName, playerColour, startPosition, startDirection);
+    }
     socket.on("all players", function (allPlayers) {
         players = new Object();
         for (let [key, value] of Object.entries(allPlayers)) {
