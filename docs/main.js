@@ -94,7 +94,7 @@ function DrawToTable(PlayerToDraw) {
     cell3.innerHTML = PlayerToDraw.kills;
 }
 
-const serverAddr = "101.186.164.176:80";
+const serverAddr = "101.186.150.75:80";
 //const serverAddr = "https://multiplayerwebgames.web.app/";
 
 const socket = io.connect(serverAddr);

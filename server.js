@@ -21,7 +21,7 @@ io.on("connect", function (socket) {
     {
         console.log(name + " has joined the game");
         player = new Player(name, Colour.FromObject(colour), new LightPath(position, null));
-        player.direction = direction;
+        player.playerDirection = direction;
         player.Update();
         players[player.name] = player;
         io.emit("player joined", player);
