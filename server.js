@@ -1,4 +1,4 @@
-const {Vec2, Colour, LightPath, Player} = require('./public/classes.js');
+const {Vec2, Colour, LightPath, Player} = require('./docs/classes.js');
 
 const express = require("express");
 const app = express();
@@ -7,7 +7,7 @@ const io = require("socket.io")(server);
 //const publicIp = require("public-ip");
 const players = new Object();
 
-app.use(express.static("public"));
+app.use(express.static("docs"));
 
 server.listen(80);
 
