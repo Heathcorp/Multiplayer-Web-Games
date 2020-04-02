@@ -1,1 +1,4 @@
-Hello! Hey 
+TODO:
+kills;
+death message and replayability;
+hosting;
