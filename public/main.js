@@ -1,3 +1,5 @@
+var serverAddr = "http://101.186.164.176";
+
 var playerName = prompt("Player Name:");
 var playerColour = Colour.random;
 var startPosition;
@@ -21,6 +23,13 @@ function DrawPosition(pos, col) {
     gc.fill(col.r, col.g, col.b, col.a);
     gc.rect(x * cellWidth, y * cellHeight, cellWidth, cellHeight);
     gc.pop();
+}
+
+function DrawPlayer(player)
+{
+    player.lightPath.map(function (lightPath) {
+        DrawPosition(lightPath.position, player.colour);
+    });
 }
 
 var canvas;
@@ -89,23 +98,24 @@ function DrawToTable(PlayerToDraw) {
     cell3.innerHTML = PlayerToDraw.kills;
 }
 
-const socket = io.connect("http://101.186.164.176");
+const socket = io.connect(serverAddr);
 //const socket = io.connect("http://localhost/");
 
-var JoinGame; //JoinGame function 
+var JoinGame; //JoinGame function
 
 socket.on("connect", function () {
+    console.log("connected to server");
     JoinGame = function() {
         socket.emit("player joined", playerName, playerColour, startPosition, startDirection);
+        console.log("joined the game");
     }
     socket.on("all players", function (allPlayers) {
+        console.log("received other player data");
         players = new Object();
         for (let [key, value] of Object.entries(allPlayers)) {
             let player = Player.FromObject(value)
             players[key] = player;
-            player.lightPath.map(function (lightPath) {
-                DrawPosition(lightPath.position, player.colour);
-            });
+            DrawPlayer(player);
             DrawToTable(player);
         }
 
@@ -118,17 +128,26 @@ socket.on("connect", function () {
         });
 
         socket.on("player joined", function (newPlayer) {
+            console.log("new player joined");
             let player = Player.FromObject(newPlayer);
             players[newPlayer.name] = player;
             DrawToTable(player);
+            DrawPlayer(player);
         });
 
-        socket.on("player disconnected", function (name) {
+        socket.on("player eliminated", function(name)
+        {
+            console.log("player eliminated");
+            console.log(players[name].HeadPosition);
             players[name].lightPath.map(function (lightPath) 
             {
                 DrawPosition(lightPath.position, Colour.black);
             });
             delete players[name];
+        });
+
+        socket.on("player disconnected", function(name) {
+            console.log("player disconnected");
         });
     });
 });

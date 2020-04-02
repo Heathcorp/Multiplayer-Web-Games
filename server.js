@@ -4,6 +4,7 @@ const express = require("express");
 const app = express();
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
+//const publicIp = require("public-ip");
 const players = new Object();
 
 app.use(express.static("public"));
@@ -13,7 +14,9 @@ server.listen(80);
 io.on("connect", function (socket) {
     var player;
 
+    console.log("client connected");
     socket.emit("all players", players);
+
     socket.on("player joined", function(name, colour, position, direction)
     {
         console.log(name + " has joined the game");
@@ -34,9 +37,14 @@ io.on("connect", function (socket) {
     {
         if (player != null)
         {
+            io.emit("player eliminated", player.name);
             console.log(player.name + " has disconnected");
             io.emit("player disconnected", player.name);
             delete players[player.name];
+        }
+        else
+        {
+            console.log("client disconnected");
         }
     });
 });
@@ -46,6 +54,11 @@ let timer = setInterval(Update, 50);
 function Update() //called each server "tick"
 {
     newPositions = new Object();
+    for (let [name, player] of Object.entries(players))
+    {
+        player.Update();
+        newPositions[name] = player.HeadPosition;
+    }
     for (let [name, player] of Object.entries(players))
     {
         //check for collisions
@@ -67,14 +80,22 @@ function Update() //called each server "tick"
                         {
                             otherPlayer.isDead = true;
                         }
+                        else
+                        {
+                            console.log(player.HeadPosition);
+                        }
                     }
                 }
             }
         }
-        if (!player.isDead)
+    }
+    for (let [name, player] of Object.entries(players))
+    {
+        if (player.isDead)
         {
-            player.Update();
-            newPositions[name] = player.HeadPosition;
+            io.emit("player eliminated", name);
+            delete players[name];
+            delete newPositions[name];
         }
     }
     io.emit("update", newPositions);
