@@ -1,4 +1,4 @@
 TODO:
-kills
-death message and replayability
-hosting
+kills;
+death message and replayability;
+hosting;
