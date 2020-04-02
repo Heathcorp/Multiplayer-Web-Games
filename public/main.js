@@ -35,9 +35,8 @@ function setup() {
     canvas.position(x, y);
     canvas.parent('holder');
 
-    canvas.mousePressed(function()
-    {
-        startPosition = new Vec2(mouseX/cellWidth, mouseY/cellHeight);
+    canvas.mousePressed(function () {
+        startPosition = new Vec2(mouseX / cellWidth, mouseY / cellHeight);
     });
 }
 
@@ -57,14 +56,11 @@ function keyPressed() {
     } else if (keyCode === 40 || keyCode === 83) {//S or Down arrow
         newDir = 3;
     }
-    if (newDir != null)
-    {
-        if (startDirection != null)
-        {
+    if (newDir != null) {
+        if (startDirection != null) {
             socket.emit("change direction", newDir);
         }
-        else if (startPosition != null)
-        {
+        else if (startPosition != null) {
             startDirection = newDir;
             JoinGame();
         }
@@ -89,13 +85,14 @@ function DrawToTable(PlayerToDraw) {
     cell3.innerHTML = PlayerToDraw.kills;
 }
 
-const socket = io.connect("http://101.186.164.176");
+const socket = io.connect("https://multiplayerwebgames.web.app/");
+//const socket = io.connect("http://101.186.164.176");
 //const socket = io.connect("http://localhost/");
 
 var JoinGame; //JoinGame function 
 
 socket.on("connect", function () {
-    JoinGame = function() {
+    JoinGame = function () {
         socket.emit("player joined", playerName, playerColour, startPosition, startDirection);
     }
     socket.on("all players", function (allPlayers) {
@@ -124,8 +121,7 @@ socket.on("connect", function () {
         });
 
         socket.on("player disconnected", function (name) {
-            players[name].lightPath.map(function (lightPath) 
-            {
+            players[name].lightPath.map(function (lightPath) {
                 DrawPosition(lightPath.position, Colour.black);
             });
             delete players[name];
