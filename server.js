@@ -51,6 +51,7 @@ io.on("connect", function (socket) {
 
 let timer = setInterval(Update, 50);
 
+const gridSize = new Vec2(128, 72);
 function Update() //called each server "tick"
 {
     newPositions = new Object();
@@ -62,7 +63,12 @@ function Update() //called each server "tick"
     for (let [name, player] of Object.entries(players))
     {
         //check for collisions
-        if (player.lightPath.lightPath.IsOverlapping(player.HeadPosition))
+        playerPos = player.HeadPosition;
+        if (playerPos.x < 0 || playerPos.y < 0 || playerPos.x >= gridSize.x || playerPos.y >= gridSize.y)
+        {
+            player.isDead = true;
+        }
+        else if (player.lightPath.lightPath.IsOverlapping(player.HeadPosition))
         {
             player.isDead = true;
         }
@@ -79,10 +85,6 @@ function Update() //called each server "tick"
                         if (Vec2.IsEqual(collisionPos, otherPlayer.HeadPosition))
                         {
                             otherPlayer.isDead = true;
-                        }
-                        else
-                        {
-                            console.log(player.HeadPosition);
                         }
                     }
                 }

@@ -2,6 +2,7 @@ var playerName = prompt("Player Name:");
 var playerColour = Colour.random;
 var startPosition;
 var startDirection;
+var isPlaying = false;
 
 var players; //dictionary of playerName keyed player objects
 
@@ -64,7 +65,7 @@ function keyPressed() {
         newDir = 3;
     }
     if (newDir != null) {
-        if (startDirection != null) {
+        if (isPlaying) {
             socket.emit("change direction", newDir);
         }
         else if (startPosition != null) {
@@ -81,6 +82,7 @@ function keyPressed() {
 function DrawToTable(PlayerToDraw) {
     var table = document.getElementById("PlayerTable");
     var row = table.insertRow(1);
+    row.setAttribute("id", PlayerToDraw.name);
     var cell1 = row.insertCell(0);
     var cell2 = row.insertCell(1);
     var cell3 = row.insertCell(2);
@@ -108,6 +110,7 @@ socket.on("connect", function () {
     JoinGame = function() {
         socket.emit("player joined", playerName, playerColour, startPosition, startDirection);
         console.log("joined the game");
+        isPlaying = true;
     }
     socket.on("all players", function (allPlayers) {
         console.log("received other player data");
@@ -137,8 +140,17 @@ socket.on("connect", function () {
 
         socket.on("player eliminated", function(name)
         {
+            if (playerName == name)
+            {
+                isPlaying = false;
+                startPosition = null;
+            }
+
+            //delete table row
+            var row = document.getElementById(name);
+            row.innerHTML = "";
+
             console.log("player eliminated");
-            console.log(players[name].HeadPosition);
             players[name].lightPath.map(function (lightPath) 
             {
                 DrawPosition(lightPath.position, Colour.black);
