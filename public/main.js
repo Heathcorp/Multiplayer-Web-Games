@@ -86,6 +86,7 @@ function DrawToTable(PlayerToDraw) {
 }
 
 const socket = io.connect("https://multiplayerwebgames.web.app/");
+//aids
 //const socket = io.connect("http://101.186.164.176");
 //const socket = io.connect("http://localhost/");
 
