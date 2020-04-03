@@ -7,7 +7,7 @@ const io = require("socket.io")(server);
 //const publicIp = require("public-ip");
 const players = new Object();
 
-app.use(express.static("docs"));
+app.use(express.static("public"));
 
 server.listen(80);
 
