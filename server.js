@@ -1,4 +1,4 @@
-const {Vec2, Colour, LightPath, Player} = require('./docs/classes.js');
+const {Vec2, Colour, LightPath, Player} = require('./public/classes.js');
 
 const express = require("express");
 const app = express();
